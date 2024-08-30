@@ -66,7 +66,7 @@ right depending on the direction of the tilt.
 
 Here is a short demonstration followed by the device being assembled.
 
-https://youtu.be/kfDwGqDdMQc
+https://youtu.be/AyjnlBCEP1o
 
 I don't see this replacing the traditional mouse for word processing or spreadsheet work but more as a gaming or presentation control device. I
 think it would be good in a simple flight simulator or as a weapon in a simple first person shooter. I have had fun playing online mouse games,

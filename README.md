@@ -93,9 +93,9 @@ communicate over USB. This means that it couldn't send mouse emulation signals o
 bluetooth. So bluetooth it was. That also meant that there was no point using USB just for power. So I'd need to add a battery and battery saving
 features. Such as detecting when the device has been idle for a period and putting it in a power saving mode.
 
-Mapping the values from the compass sensor to mouse movements was also an interesting challenge. We want the mose pointer to move fast across the screen
+Mapping the values from the compass sensor to mouse movements was also an interesting challenge. We want the mouse pointer to move fast across the screen
 but still be accurate. For this reason there is an exponential type mapping between the compass sensor and the steps the mouse will take.
 Small tilt movements take small steps but large tilt movements cause large steps to be taken. There is a wider range of movement allowed for
-small steps than large steps. This is achieved by having a mapping table that contains more small steps and as the movement gets larger and the steps get
-bigger, the number of entries in the mapping table get smaller.
+small steps than large steps. This is achieved by having a mapping table that contains more small steps and as the movement gets larger and
+the steps get bigger, the number of entries in the mapping table get smaller.
 

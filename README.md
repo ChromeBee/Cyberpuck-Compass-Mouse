@@ -1,3 +1,4 @@
+<h2>Description</h2>
 In the late 90's / early 2000's, I bought a Forte VFX1 headgear VR headset second hand from Cash Converters. This came with a hand device they called a Cyberpuck. Both the VFX1 
 and the Cyberpuck used the Earths magnetic field to determine movement. In the VFX1 this determined where the wearer was looking and in the 
 case of the Cyberpuck, what hand movements the user was making.
@@ -10,12 +11,12 @@ case of the Cyberpuck, what hand movements the user was making.
 
 This is my version of the Cyberpuck, upgraded to be wireless. I was inspired to develop this based on an Element14 video I watched where Clem
 tries to make a mouse using an IMU sensor but ends up with something you have to pick up and twist and tilt to get working.  I though, that is 
-like the old Cyberpuck I used to have.
+like the old Cyberpuck I used to have. 
 
 The Cyberpuck is a 2DOF mouse that uses pitch to move the mouse pointer up and down the screen and roll to move it left and right. I can't 
 remember how I used the original version but for this one, the mouse only moves if the lower button (GPIO2) is pressed. This is so you can set
 it down with the mouse pointer moving unintentionally. The top button (GPIO4) provides the left mouse button functionality while the middle
-button (GPIO3) is the right mouse button.
+button (GPIO3) is the right mouse button. <i>Please note that there is additional informations below the built instruction for those that want it.</i>
 
 <b>Parts List:</B>
 <ul>
@@ -72,11 +73,14 @@ I don't see this replacing the traditional mouse for word processing or spreadsh
 think it would be good in a simple flight simulator or as a weapon in a simple first person shooter. I have had fun playing online mouse games,
 but I keep losing to people using a traditional mouse. Maybe it is because I need more practice (or maybe I'm crap at the games).
 
-<b>Additional Information</b>
+<h2>Additional Information</h2>
+
+![prototypes](https://github.com/user-attachments/assets/611a2a77-9b60-47fe-ac81-d44e824320b3)
+<i> how many prototypes until the final design?</i>
 
 The GY-271 compass magnetometer uses a QMC5883L digital compass chip. A lot of the listings for this sensor board list it as having a HMC5883L
 chip. Some versions of this board also have HMC5883L written on them.
-This caused me to lose a lot of time as both chips offer a similar function but have different I2C address. This resulted in me getting zeros back from the I2C interface. The chip on the pcb just had 5883 written on it.
+This caused me to lose a lot of time as both chips offer a similar function but have different I2C address. This resulted in me getting zeros back from the I2C interface. The chip on the PCB just had 5883 written on it.
 I downloaded a sketch that allowed me to see which addresses were active on the I2C bus and from that I found out that the chip
 must have been a QMC5883L.
 
@@ -85,13 +89,13 @@ around 360 degrees in all directions. I tried this and also captured large volum
 values given from the three directional sensors on the chip have different maximum values and different maximum values in the negative and
 positive directions. This is why calibration is necessary if you need accurate direction values.
 
-I stopped this project for several months as I had to think how to convert a 3D vector to the mouse movement I wanted. It turned out I didn't need
-to as all we need is a relative change. We only need 2 DOF for this. So provided the mouse is rotated around one of its axis, the relative change in
+I stopped this project for several months as I had to think how to convert the 3D vector created from the 3 perpendicular sensors readings to the mouse movement I wanted. It turned out I didn't need
+to as all I need is a relative change. We only need 2 DOF for this. So provided the mouse is rotated around one of its axis, the relative change in
 value will give you the direction and amount.
 
 Given the orientation of the board in the case, a roll (tilt left or right) cause a change in the Y and Z axis readings . 
 A pitch change causes a change in the X and Y axis readings. For the porpose of using this as a mouse we only need to look at the change in Z readings to determine how much to move the mouse pointer in the horizontal and in what direction. The X reading is used in the same way for 
-vertical movements. We can ignore the Y readings.
+vertical movements. We can ignore the Y readings in normal use. Yawing the mouse (rotating it about the vertical axis) does cause movement on both the horizontal and vertical directions. Preventing this would mean going back to the 3D vector maths and I personally don't think it is worth the effort. Limiting our hand movements to pitch and roll is the easiest solution.
 
 I intended this to be a wired mouse so I was surprised to find that I couldn't do that because the microcontroller I chose had a hardware UART to
 communicate over USB. This means that it couldn't send mouse emulation signals over that port. I'd have to change the microcontroller or use
@@ -108,4 +112,4 @@ The mapping table is sized based on the sum of integers up to a certain number. 
 case the mapping table would have 10 entries (4+3+2+1 = 10), The first 4 entries in the mapping table are filled with 1, the second 3 are filled with 2 the third 2 are filled with 3 and the last one is filled with 4. These numbers represent the number of steps the mouse will take
 if that mapping entry is selected. We then need to take a reading from the compass, multiple that by 10 and divide the result by what we think is the largest number the compass can return (- the deadzone). Convert that into an integer and you should get a number between zero and ten. that we can then use to look up a mouse movement amount in the mapping table.
 
-I might add something to the code to emulate even smaller steps. Such as emulating half steps by making the mouse only take a step every second time through the main loop for very small mouse movements.
+I might add something to the code to emulate even smaller steps. Such as emulating half steps by making the mouse only take a step every second time through the main loop for very small mouse movements. <b>update</b> I now think that the small steps are fine (comparing it to my other mouse) but I need a slower acceleration, i.e. more small steps before it starts to take bigger steps.

@@ -13,7 +13,12 @@
 // This sketch needs the QMC5883LCompass library and a BleMouse library
 // The default BLEMouse library doesn't compile due to change in the arduino string type introduced some time ago. Use the library below instead
 //  https://github.com/sirfragles/ESP32-BLE-Mouse/tree/dev
-
+//
+/*--------------------------------------------------------------
+ * Change log
+ * C001 01-Sep-2024 - lengthened the mapping array to give double the space to each step value to make acceleration slower
+ * -------------------------------------------------------------
+ */
 #include <BleMouse.h>
 #include <QMC5883LCompass.h>
 #include "driver/rtc_io.h"
@@ -43,14 +48,15 @@ static bool reverseY = true; // reverse mouse Y direction if true
 QMC5883LCompass compass;
 static std::string deviceName = "Cyberpuck mouse";
 BleMouse bleMouse;
-int map_array[MAX_MOUSE_MOVEMENT*(MAX_MOUSE_MOVEMENT+1)/2]; // array that is the size all the interger values from MAX_MOUSE_MOVEMENT added together down to zero. i.e. if this were 3 it would equal 3+2+1+0
+// C001 - doubled the size of the map_array as it will have double the number of each value original formula was MAX_MOUSE_MOVEMENT*(MAX_MOUSE_MOVEMENT+1)/2 this is the formula for the sum of all integers upto MAX_MOUSE_MOVEMENT
+int map_array[MAX_MOUSE_MOVEMENT*(MAX_MOUSE_MOVEMENT+1)]; // array that is the size all the interger values from MAX_MOUSE_MOVEMENT added together down to zero. i.e. if this were 3 it would equal 3+2+1+0
 
 //-------------------------------------
 // convert from compass value to mouse movement value
 // the map_array is filled in the setup subroutine to favour small movements
 int mapToMovement(float input, float max_output,float max_input) {
   int output;
-  int max_index = (int)(max_output*(max_output+1)/2.0); // Size of the map array
+  int max_index = (int)(max_output*(max_output+1)); // Size of the map array C001 - removed the divide by 2 in the integer addition formula
   
   output = input*max_index/max_input; // find the array index to use (this may be negative indicating the looked up value must be the same)
   int sgn=output/abs(output); // get the sign of the value (this gives either 1 or -1)
@@ -93,10 +99,13 @@ void setup() {
   // fill map array with steps to be taken. Small movements occupy more of the array than big movements to give more control
   // if MAX_MOUSE_MOVEMENT were to be set to 3, then the array would be filled with 1,1,1,2,2,3
   // The map to movement function uses this to determine how big a mouse movement to make for a particular angle.
+  // C001 - in example now filling with 1,1,1,1,1,1,2,2,2,2,3,3 - to reduce mouse acceleration
   for (int i = 0; i<MAX_MOUSE_MOVEMENT; i++) {
     for (int j = 0; j<MAX_MOUSE_MOVEMENT-i; j++) {
-      map_array[k++] = i+1;
-      Serial.print(i+1);Serial.print(",");
+      for (int m = 0; m<2; m++) {  // C001 - double each map values entries
+        map_array[k++] = i+1;
+        Serial.print(i+1);Serial.print(",");
+      }
     }
   }
   Serial.print(" Array Size = ");Serial.println(k);
@@ -137,7 +146,7 @@ void loop() {
 
   
   if(bleMouse.isConnected()) {
-    if (bleFirstConnect) {
+    if (bleFirstConnect) { // this is just so we only print out that we have a connection the first time we connect. subsequent times through the loop we should still be connected
       Serial.print(bleFirstConnect);Serial.print("BLE Connected");
       bleFirstConnect = false;
       Serial.println(bleFirstConnect);
@@ -147,7 +156,7 @@ void loop() {
     // button values true or false
     readAllFromButtons(buttonReads);
 
-    if (buttonReads[MOVEMENT_BUTTON]) {    
+    if (buttonReads[MOVEMENT_BUTTON]) {
       compass.read();
 
       // Return XYZ readings

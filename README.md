@@ -18,6 +18,8 @@ remember how I used the original version but for this one, the mouse only moves 
 it down with the mouse pointer moving unintentionally. The top button (GPIO4) provides the left mouse button functionality while the middle
 button (GPIO3) is the right mouse button. <i>Please note that there is additional informations below the built instruction for those that want it.</i>
 
+<h2>Assemby Instructions</h2>
+
 <b>Parts List:</B>
 <ul>
 <li>XIAO ESPC3 micro controller</li>
@@ -112,4 +114,22 @@ The mapping table is sized based on the sum of integers up to a certain number. 
 case the mapping table would have 10 entries (4+3+2+1 = 10), The first 4 entries in the mapping table are filled with 1, the second 3 are filled with 2 the third 2 are filled with 3 and the last one is filled with 4. These numbers represent the number of steps the mouse will take
 if that mapping entry is selected. We then need to take a reading from the compass, multiple that by 10 and divide the result by what we think is the largest number the compass can return (- the deadzone). Convert that into an integer and you should get a number between zero and ten. that we can then use to look up a mouse movement amount in the mapping table.
 
-I might add something to the code to emulate even smaller steps. Such as emulating half steps by making the mouse only take a step every second time through the main loop for very small mouse movements. <b>update</b> I now think that the small steps are fine (comparing it to my other mouse) but I need a slower acceleration, i.e. more small steps before it starts to take bigger steps.
+I might add something to the code to emulate even smaller steps. Such as emulating half steps by making the mouse only take a step every second time through the main loop for very small mouse movements. <b>update</b> I now think that the small steps are fine (comparing it to my other mouse) but I need a slower acceleration, i.e. more small steps before it starts to take bigger steps. I have added that to the code already.
+
+Another thought I had was to have a click on and click off for mouse movements. I added that to the code but didn't like it in use. At first it seemed an improvement but I couldn't easily tell if it was on or off, so I removed it again.
+
+I was playing the 3D maze game at https://www.chrisraff.com/3d-maze/ This is a fun game. I played it using the cyberpuck and an ordinary mouse and I found I had better scores with the cyberpuck. Finally I've found something that it is better at than a normal mouse (at least for me). 
+
+I am still learning to use this. I keep moving my arm horizontally to move the mouse in that direction. That is not how the mouse currently works as the maths is far more complicated. And the original worked the same way mine does. Maybe I'll revisit it at some point.
+
+<h2>License</h2>
+Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+
+[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
+[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
